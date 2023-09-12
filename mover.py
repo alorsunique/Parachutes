@@ -1,63 +1,60 @@
-
+# This script should move the files to their respective albums
 
 import os
 import shutil
+from pathlib import Path
 
 from mutagen.easyid3 import EasyID3
 
+project_dir = Path.cwd()
+current_dir = project_dir
+current_dir = project_dir.parent.parent
 
-cur_dir = os.getcwd()
-environment_dir = os.path.join(cur_dir, "Environment")
-move_dir = os.path.join(cur_dir, "Move")
+resources_dir = current_dir / "PycharmProjects Resources" / "Parachutes Resources"
 
-if not os.path.exists(environment_dir):
-    os.mkdir(environment_dir)
+if not os.path.exists(resources_dir):
+    os.mkdir(resources_dir)
 
-if not os.path.exists(move_dir):
+input_dir = resources_dir / "Input"
+move_dir = resources_dir / "Move"
+
+if not input_dir.exists():
+    os.mkdir(input_dir)
+
+if not move_dir.exists():
     os.mkdir(move_dir)
 
 specialChar = "\/?:*<>"
 
-for to_move in os.listdir(environment_dir):
-    print(to_move)
-    src_to_move = os.path.join(environment_dir, to_move)
+for file in input_dir.iterdir():
+    print(f"File: {file.name}")
+    src_to_move = file
 
     audio = EasyID3(src_to_move)
-    print(audio)
 
     if 'albumartist' in audio:
-        albumArtistHold = str(audio['albumartist'])
+        album_artist = str(audio['albumartist'])
     elif 'artist' in audio:
-        albumArtistHold = str(audio['artist'])
+        album_artist = str(audio['artist'])
 
-    albumArtistHold = albumArtistHold[2:-2]
+    album_artist = album_artist[2:-2]
 
-
-    albumHold = str(audio['album'])
-    albumHold = albumHold[2:-2]
-
+    album = str(audio['album'])
+    album = album[2:-2]
 
     for character in specialChar:
-        albumArtistHold = albumArtistHold.replace(character,"")
-        albumHold = albumHold.replace(character, "")
+        album_artist = album_artist.replace(character, "")
+        album = album.replace(character, "")
 
+    print(f"{album_artist} | {album}")
 
-    print(albumHold)
-    print(albumArtistHold)
+    album_artist_dir = move_dir / album_artist
+    album_dir = album_artist_dir / album
 
-    albumArtistMove = os.path.join(move_dir,albumArtistHold)
-    print(albumArtistMove)
+    if not os.path.exists(album_artist_dir):
+        os.mkdir(album_artist_dir)
 
-    albumMove = os.path.join(albumArtistMove,albumHold)
-    print(albumMove)
+    if not os.path.exists(album_dir):
+        os.mkdir(album_dir)
 
-    if not os.path.exists(albumArtistMove):
-        os.mkdir(albumArtistMove)
-
-    if not os.path.exists(albumMove):
-        os.mkdir(albumMove)
-
-    shutil.move(src_to_move, albumMove)
-
-
-
+    shutil.move(src_to_move, album_dir)

@@ -1,52 +1,64 @@
-
+# This script should rename the music file appropriately given that the info are in the metadata
 
 import os
+from pathlib import Path
 
 from mutagen.easyid3 import EasyID3
 
-cur_dir = os.getcwd()
-environment_dir = os.path.join(cur_dir, "Environment")
+project_dir = Path.cwd()
+current_dir = project_dir
+current_dir = project_dir.parent.parent
 
-if not os.path.exists(environment_dir):
-    os.mkdir(environment_dir)
+resources_dir = current_dir / "PycharmProjects Resources" / "Parachutes Resources"
+
+if not os.path.exists(resources_dir):
+    os.mkdir(resources_dir)
+
+input_dir = resources_dir / "Input"
+
+
+if not input_dir.exists():
+    os.mkdir(input_dir)
 
 specialChar = "\/?:*"
 
-for fileHandle in os.listdir(environment_dir):
-    print(fileHandle)
-    split_tup = os.path.splitext(fileHandle)
+for file in input_dir.iterdir():
+    print(f"File: {file.name}")
 
-    src_file = os.path.join(environment_dir, fileHandle)
+    file_handle = os.path.splitext(file.name)[1]
+
+    src_file = file
 
     audio = EasyID3(src_file)
 
-    numberHold = str(audio['tracknumber'])
-    print(numberHold)
-    numberHold = numberHold[2:-2]
-    if "/" in numberHold:
-        numberSplit = numberHold.split("/")
-    else:
-        numberSplit = numberHold.split(" ")
+    track_number = str(audio['tracknumber'])
+    print(f"Track Number: {track_number}")
+    track_number = track_number[2:-2]
 
-    if int(numberSplit[0]) < 10:
-        numberString = "0" + str(int(numberSplit[0]))
+    if "/" in track_number:
+        number_split = track_number.split("/")
     else:
-        numberString = str(int(numberSplit[0]))
+        number_split = track_number.split(" ")
 
-    titleHold = str(audio['title'])
-    titleHold = titleHold[2:-2]
+    if int(number_split[0]) < 10:
+        number_string = "0" + str(int(number_split[0]))
+    else:
+        number_string = str(int(number_split[0]))
+
+    title = str(audio['title'])
+    title = title[2:-2]
 
     for character in specialChar:
-        titleHold = titleHold.replace(character, "")
+        title = title.replace(character, "")
 
-    titleString = titleHold
+    title_string = title
 
-    newFileNameString = numberString + ". " + titleString + split_tup[1]
+    new_file_name = f"{number_string}. {title_string}{file_handle}"
 
-    print(newFileNameString)
+    print(f"New Name: {new_file_name}")
 
-    newFileName = os.path.join(environment_dir, newFileNameString)
+    new_file_dir = input_dir / new_file_name
 
-    print(newFileName)
+    # newFileName = os.path.join(environment_dir, new_file_name)
 
-    os.rename(src_file, newFileName)
+    os.rename(src_file, new_file_dir)
