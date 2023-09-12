@@ -7,11 +7,11 @@ from mutagen.easyid3 import EasyID3
 
 project_dir = Path.cwd()
 current_dir = project_dir
-current_dir = project_dir.parent.parent
+current_dir = current_dir.parent.parent
 
 resources_dir = current_dir / "PycharmProjects Resources" / "Parachutes Resources"
 
-if not os.path.exists(resources_dir):
+if not resources_dir.exists():
     os.mkdir(resources_dir)
 
 input_dir = resources_dir / "Input"

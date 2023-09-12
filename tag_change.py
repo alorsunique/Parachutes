@@ -1,28 +1,37 @@
-import os
+# This script should be able to change any tag within the MP3 file
+# This is set to change the album artist as of now to merge duplicates
+# with slight variation
 
+import os
+from pathlib import Path
 from mutagen.easyid3 import EasyID3
 
-cur_dir = os.getcwd()
-environment_dir = os.path.join(cur_dir, "Environment")
+project_dir = Path.cwd()
+current_dir = project_dir
+current_dir = current_dir.parent.parent
 
-if not os.path.exists(environment_dir):
-    os.mkdir(environment_dir)
+resources_dir = current_dir / "PycharmProjects Resources" / "Parachutes Resources"
 
+if not os.path.exists(resources_dir):
+    os.mkdir(resources_dir)
 
-for file in os.listdir(environment_dir):
-    print(file)
+input_dir = resources_dir / "Input"
 
-    split_tup = os.path.splitext(file)
+if not input_dir.exists():
+    os.mkdir(input_dir)
 
-    src_file = os.path.join(environment_dir, file)
+artist = input(f"Input Artist: ")
+
+for file in input_dir.iterdir():
+    print(f"File: {file.name}")
+
+    file_handle = os.path.splitext(file.name)[1]
+
+    src_file = file
 
     audio = EasyID3(src_file)
 
-    print(audio)
-
-    audio["artist"] = "LALALA"
-
-    print(audio)
-    print(audio["artist"])
+    audio["artist"] = artist
+    audio["albumartist"] = artist
 
     audio.save()
