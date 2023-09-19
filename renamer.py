@@ -6,21 +6,19 @@ from pathlib import Path
 from mutagen.easyid3 import EasyID3
 
 project_dir = Path.cwd()
-current_dir = project_dir
-current_dir = current_dir.parent.parent
+upper_dir = project_dir.parent.parent
 
-resources_dir = current_dir / "PycharmProjects Resources" / "Parachutes Resources"
+resources_dir = upper_dir / "PycharmProjects Resources" / "Parachutes Resources"
 
 if not resources_dir.exists():
     os.mkdir(resources_dir)
 
 input_dir = resources_dir / "Input"
 
-
 if not input_dir.exists():
     os.mkdir(input_dir)
 
-specialChar = "\/?:*"
+special_char = "\/?:*"
 
 for file in input_dir.iterdir():
     print(f"File: {file.name}")
@@ -48,7 +46,7 @@ for file in input_dir.iterdir():
     title = str(audio['title'])
     title = title[2:-2]
 
-    for character in specialChar:
+    for character in special_char:
         title = title.replace(character, "")
 
     title_string = title
