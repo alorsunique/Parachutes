@@ -17,3 +17,15 @@ print(f"Resources Directory: {resources_dir}")
 
 if not resources_dir.exists():
     os.mkdir(resources_dir)
+
+input_dir = resources_dir / "Input"
+if not input_dir.exists():
+    os.mkdir(input_dir)
+
+flac_convert_workspace_dir = resources_dir / "FLAC Workspace"
+if not flac_convert_workspace_dir.exists():
+    os.mkdir(flac_convert_workspace_dir)
+
+move_dir = resources_dir / "Move"
+if not move_dir.exists():
+    os.mkdir(move_dir)

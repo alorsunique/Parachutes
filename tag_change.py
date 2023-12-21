@@ -7,18 +7,15 @@ from pathlib import Path
 
 from mutagen.easyid3 import EasyID3
 
-project_dir = Path.cwd()
-upper_dir = project_dir.parent.parent
+resources_dir_text = "Resources_Path.txt"
 
-resources_dir = upper_dir / "PycharmProjects Resources" / "Parachutes Resources"
+entry_list = []
+with open(resources_dir_text, 'r') as reader:
+    entry_list.append(reader.read())
+    reader.close()
 
-if not os.path.exists(resources_dir):
-    os.mkdir(resources_dir)
-
+resources_dir = Path(entry_list[0])
 input_dir = resources_dir / "Input"
-
-if not input_dir.exists():
-    os.mkdir(input_dir)
 
 artist = input(f"Input Artist: ")
 
