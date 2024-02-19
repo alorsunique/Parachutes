@@ -1,25 +1,20 @@
+import os
 from pathlib import Path
 
-from mutagen.flac import FLAC
 from mutagen.id3 import ID3, APIC
 from mutagen.mp3 import MP3
-from pydub import AudioSegment
-from pydub.utils import mediainfo
 
-resources_dir_text = "Resources_Path.txt"
+script_path = Path(__file__).resolve()
+project_dir = script_path.parent
+os.chdir(project_dir)
 
-entry_list = []
-with open(resources_dir_text, 'r') as reader:
-    entry_list.append(reader.read())
-    reader.close()
-
-resources_dir = Path(entry_list[0])
+with open("Resources_Path.txt", "r") as resources_text:
+    resources_dir = Path(str(resources_text.readline()).replace('"', ''))
 
 input_dir = resources_dir / "Input"
 image_path = str(input(f"Image Path: "))
 
 for file in input_dir.iterdir():
-
     with open(image_path, 'rb') as cover_image:
         album_cover_bytes = cover_image.read()
 

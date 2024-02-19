@@ -5,26 +5,25 @@ from pathlib import Path
 
 from mutagen.easyid3 import EasyID3
 
-resources_dir_text = "Resources_Path.txt"
+script_path = Path(__file__).resolve()
+project_dir = script_path.parent
+os.chdir(project_dir)
 
-entry_list = []
-with open(resources_dir_text, 'r') as reader:
-    entry_list.append(reader.read())
-    reader.close()
+with open("Resources_Path.txt", "r") as resources_text:
+    resources_dir = Path(str(resources_text.readline()).replace('"', ''))
 
-resources_dir = Path(entry_list[0])
 input_dir = resources_dir / "Input"
 
-special_char = "\/?:*"
+special_characters = "\/?:*"
 
 for file in input_dir.iterdir():
     print(f"File: {file.name}")
 
-    file_handle = os.path.splitext(file.name)[1]
+    file_extension = file.suffix
 
-    src_file = file
+    source_file = file
 
-    audio = EasyID3(src_file)
+    audio = EasyID3(source_file)
 
     track_number = str(audio['tracknumber'])
     print(f"Track Number: {track_number}")
@@ -43,17 +42,15 @@ for file in input_dir.iterdir():
     title = str(audio['title'])
     title = title[2:-2]
 
-    for character in special_char:
+    for character in special_characters:
         title = title.replace(character, "")
 
     title_string = title
 
-    new_file_name = f"{number_string}. {title_string}{file_handle}"
+    new_file_name = f"{number_string}. {title_string}{file_extension}"
 
     print(f"New Name: {new_file_name}")
 
-    new_file_dir = input_dir / new_file_name
+    new_file_path = input_dir / new_file_name
 
-    # newFileName = os.path.join(environment_dir, new_file_name)
-
-    os.rename(src_file, new_file_dir)
+    os.rename(source_file, new_file_path)

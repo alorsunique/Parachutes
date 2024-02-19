@@ -6,24 +6,23 @@ from pathlib import Path
 
 from mutagen.easyid3 import EasyID3
 
-resources_dir_text = "Resources_Path.txt"
+script_path = Path(__file__).resolve()
+project_dir = script_path.parent
+os.chdir(project_dir)
 
-entry_list = []
-with open(resources_dir_text, 'r') as reader:
-    entry_list.append(reader.read())
-    reader.close()
+with open("Resources_Path.txt", "r") as resources_text:
+    resources_dir = Path(str(resources_text.readline()).replace('"', ''))
 
-resources_dir = Path(entry_list[0])
 input_dir = resources_dir / "Input"
 move_dir = resources_dir / "Move"
 
-specialChar = "\/?:*<>"
+special_characters = "\/?:*<>"
 
 for file in input_dir.iterdir():
     print(f"File: {file.name}")
-    src_to_move = file
+    source_to_move = file
 
-    audio = EasyID3(src_to_move)
+    audio = EasyID3(source_to_move)
 
     if 'albumartist' in audio:
         album_artist = str(audio['albumartist'])
@@ -35,7 +34,7 @@ for file in input_dir.iterdir():
     album = str(audio['album'])
     album = album[2:-2]
 
-    for character in specialChar:
+    for character in special_characters:
         album_artist = album_artist.replace(character, "")
         album = album.replace(character, "")
 
@@ -50,4 +49,4 @@ for file in input_dir.iterdir():
     if not os.path.exists(album_dir):
         os.mkdir(album_dir)
 
-    shutil.move(src_to_move, album_dir)
+    shutil.move(source_to_move, album_dir)

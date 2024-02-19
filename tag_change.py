@@ -7,14 +7,13 @@ from pathlib import Path
 
 from mutagen.easyid3 import EasyID3
 
-resources_dir_text = "Resources_Path.txt"
+script_path = Path(__file__).resolve()
+project_dir = script_path.parent
+os.chdir(project_dir)
 
-entry_list = []
-with open(resources_dir_text, 'r') as reader:
-    entry_list.append(reader.read())
-    reader.close()
+with open("Resources_Path.txt", "r") as resources_text:
+    resources_dir = Path(str(resources_text.readline()).replace('"', ''))
 
-resources_dir = Path(entry_list[0])
 input_dir = resources_dir / "Input"
 
 artist = input(f"Input Artist: ")
@@ -24,9 +23,9 @@ for file in input_dir.iterdir():
 
     file_handle = os.path.splitext(file.name)[1]
 
-    src_file = file
+    source_file = file
 
-    audio = EasyID3(src_file)
+    audio = EasyID3(source_file)
 
     audio["artist"] = artist
     audio["albumartist"] = artist
